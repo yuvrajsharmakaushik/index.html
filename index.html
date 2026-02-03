@@ -3,94 +3,93 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>For My Aviii 💖</title>
+<title>For My Aviii ❤️</title>
 
 <style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
-}
+* { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
 
 body, html {
+  margin: 0;
+  padding: 0;
   height: 100%;
   overflow: hidden;
-  color: white;
 }
 
-video {
+/* Background video */
+#bgVideo {
   position: fixed;
-  top: 0;
-  left: 0;
-  min-width: 100%;
-  min-height: 100%;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  z-index: -1;
+  z-index: -2;
 }
 
+/* Overlay blur */
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.55);
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(6px);
+  z-index: -1;
+}
+
+.container {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .card {
-  position: absolute;
-  bottom: 5%;
-  left: 50%;
-  transform: translateX(-50%);
+  background: white;
   width: 90%;
-  max-width: 380px;
-  background: rgba(0,0,0,0.65);
-  border-radius: 20px;
-  padding: 20px;
+  max-width: 360px;
+  padding: 24px;
+  border-radius: 18px;
   text-align: center;
-  animation: fadeIn 0.6s ease;
-}
-
-h2 {
-  font-size: 20px;
-  margin-bottom: 15px;
-}
-
-.option {
-  background: rgba(255,255,255,0.15);
-  margin: 10px 0;
-  padding: 14px;
-  border-radius: 14px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.option:hover {
-  background: rgba(255,255,255,0.3);
-}
-
-input {
-  width: 100%;
-  padding: 12px;
-  border-radius: 12px;
-  border: none;
-  margin-bottom: 12px;
-  text-align: center;
-  font-size: 18px;
-}
-
-.feedback {
-  margin-top: 15px;
-  font-size: 18px;
   animation: pop 0.4s ease;
 }
 
 @keyframes pop {
-  0% {transform: scale(0.8); opacity: 0;}
-  100% {transform: scale(1); opacity: 1;}
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
 }
 
-@keyframes fadeIn {
-  from {opacity: 0; transform: translate(-50%, 20px);}
-  to {opacity: 1; transform: translate(-50%, 0);}
+button {
+  width: 100%;
+  padding: 14px;
+  margin-top: 12px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  background: #ff5f8a;
+  color: white;
+  cursor: pointer;
+}
+
+.option {
+  background: #f1f1f1;
+  color: #333;
+}
+
+.option:hover { background: #ffd6e1; }
+
+.popup {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  padding: 12px 20px;
+  border-radius: 30px;
+  font-weight: 600;
+  animation: slideUp 0.5s ease;
+}
+
+@keyframes slideUp {
+  from { transform: translate(-50%, 40px); opacity: 0; }
+  to { transform: translate(-50%, 0); opacity: 1; }
 }
 </style>
 </head>
@@ -98,136 +97,31 @@ input {
 <body>
 
 <!-- BACKGROUND VIDEO -->
-<video autoplay muted loop playsinline>
-  <source src="VID_20260202_225153_891.mp4" type="video/mp4">
+<video id="bgVideo" autoplay muted loop playsinline>
+  <source src="background.mp4" type="video/mp4">
 </video>
 
 <div class="overlay"></div>
 
-<div class="card" id="card"></div>
+<!-- AUDIO -->
+<audio id="song" src="jogan.mp3" loop></audio>
 
-<!-- OPTIONAL AUDIO (replace jogan.mp3 with real file if you want autoplay) -->
-<!--
-<audio id="bgm" src="jogan.mp3"></audio>
--->
-
-<!-- SPOTIFY EMBED (manual play) -->
-<iframe style="display:none"
-src="https://open.spotify.com/embed/track/0zYDfsYRJIK0dmRUzoEJs9"
-width="0" height="0" frameborder="0"
-allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture">
-</iframe>
+<div class="container">
+  <div class="card" id="card"></div>
+</div>
 
 <script>
-const card = document.getElementById("card");
-let index = 0;
+/* ---------------- PASSCODE ---------------- */
+const PASSCODE = "218";
 
+/* ---------------- QUIZ ---------------- */
 const quiz = [
   {
-    q: "🔐 Enter Passcode",
-    input: true,
-    correct: "218",
-    note: "218 — the sign of God embedded in both of our birthdates ✨"
+    q: "When did we first text? 💬",
+    options: ["18th Jan 2025", "20th Jan 2025", "14th Feb 2025"],
+    answer: "18th Jan 2025"
   },
   {
-    q: "When did we first text?",
-    options: ["12 Jan 2025", "18 Jan 2025", "21 Feb 2025", "10 Jan 2025"],
-    correct: "18 Jan 2025"
-  },
-  {
-    q: "When did you accept you felt it… but didn’t say?",
-    options: ["10 June 2025", "16 July 2025", "20 Aug 2025", "1 July 2025"],
-    correct: "16 July 2025"
-  },
-  {
-    q: "Where did we try to meet for the first time?",
-    options: ["India Gate", "Select City Walk", "Dada Dev", "CP"],
-    correct: "Dada Dev"
-  },
-  {
-    q: "Who falls first? 😌",
-    options: ["You", "Me", "Both", "Destiny"],
-    correct: "Both"
-  },
-  {
-    q: "What are we?",
-    options: ["Talking", "Confusing", "Unreal", "Ours"],
-    correct: "Ours"
-  },
-  {
-    q: "What do I call you?",
-    options: ["Baby", "Aviii", "Darlaaa", "All of these"],
-    correct: "All of these"
-  },
-  {
-    q: "What are we building?",
-    options: ["Moments", "Memories", "Forever", "Everything"],
-    correct: "Everything"
-  },
-  {
-    q: "Do you feel safe here?",
-    options: ["Yes", "Always", "With you", "All"],
-    correct: "All"
-  },
-  {
-    q: "💌 Will you be my Valentine?",
-    options: ["Yes", "No"],
-    correct: "Yes"
-  }
-];
-
-function showQuestion() {
-  const q = quiz[index];
-  card.innerHTML = `<h2>${q.q}</h2>`;
-
-  if (q.input) {
-    card.innerHTML += `
-      <p style="opacity:0.8;margin-bottom:10px">${q.note}</p>
-      <input id="pass" type="password" placeholder="•••">
-      <div class="option" onclick="check(document.getElementById('pass').value)">
-        Unlock 💖
-      </div>
-    `;
-  } else {
-    q.options.forEach(opt => {
-      const div = document.createElement("div");
-      div.className = "option";
-      div.innerText = opt;
-      div.onclick = () => check(opt);
-      card.appendChild(div);
-    });
-  }
-}
-
-function check(answer) {
-  const q = quiz[index];
-
-  if (answer === q.correct) {
-    card.innerHTML += `<div class="feedback">mwwwwwaaaaaaaaaaaaaaaaaahhhhhhhhhhh 💋</div>`;
-    index++;
-    setTimeout(() => {
-      if (index < quiz.length) showQuestion();
-      else end();
-    }, 1200);
-  } else {
-    if (q.q.includes("Valentine")) {
-      card.innerHTML += `<div class="feedback">❌ Invalid answer<br>You are already my Valentine 😌❤️</div>`;
-    } else {
-      card.innerHTML += `<div class="feedback">try again darlaaa 😤💖</div>`;
-    }
-  }
-}
-
-function end() {
-  card.innerHTML = `
-    <h2>Forever unlocked 💖</h2>
-    <p>You were always the answer.</p>
-  `;
-}
-
-// Start
-showQuestion();
-</script>
-
-</body>
-</html>
+    q: "When did you accept you felt it… but didn’t say it yet? ❤️",
+    options: ["16th July 2025", "1st July 2025", "21st Aug 2025"],
+    answer: "16th July 2025"
