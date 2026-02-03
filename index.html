@@ -1,86 +1,143 @@
-<script>
-window.onload = function(){
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>For My Aviii ❤️</title>
 
+<style>
+*{box-sizing:border-box;font-family:Arial,sans-serif}
+html,body{margin:0;height:100%;overflow:hidden;background:#000}
+
+#bgVideo{
+  position:fixed;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  z-index:-2;
+}
+
+.overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.45);
+  z-index:-1;
+}
+
+.container{
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.card{
+  background:#fff;
+  width:90%;
+  max-width:360px;
+  padding:22px;
+  border-radius:18px;
+  text-align:center;
+}
+
+button{
+  width:100%;
+  padding:14px;
+  margin-top:12px;
+  border:none;
+  border-radius:12px;
+  font-size:16px;
+  cursor:pointer;
+}
+
+.primary{
+  background:#ff5f8a;
+  color:#fff;
+}
+
+.option{
+  background:#f3f3f3;
+  color:#333;
+}
+
+.popup{
+  position:fixed;
+  bottom:40px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#fff;
+  padding:12px 20px;
+  border-radius:30px;
+  font-weight:bold;
+  z-index:999;
+}
+
+.heart{
+  position:fixed;
+  font-size:24px;
+  animation:floatUp 1.5s linear forwards;
+}
+
+@keyframes floatUp{
+  from{transform:translateY(0);opacity:1}
+  to{transform:translateY(-120px);opacity:0}
+}
+</style>
+</head>
+
+<body>
+
+<video id="bgVideo" muted autoplay loop playsinline>
+  <source src="background.mp4" type="video/mp4">
+</video>
+
+<div class="overlay"></div>
+
+<audio id="song" src="jogan.mp3" preload="auto"></audio>
+
+<div class="container">
+  <div class="card" id="card">Loading…</div>
+</div>
+
+<script>
+(function(){
+
+/* 🔐 SAFE START */
 const card = document.getElementById("card");
 const song = document.getElementById("song");
 const PASSCODE = 218;
-
-/* 💌 QUIZ */
-const quiz = [
-  {
-    q:"When did we first text? 💬",
-    options:["18th Jan 2025","20th Jan 2025","14th Feb 2025"],
-    answer:"18th Jan 2025"
-  },
-  {
-    q:"When did you feel it but didn’t say it yet? ❤️",
-    options:["16th July 2025","1st July 2025","21st Aug 2025"],
-    answer:"16th July 2025"
-  },
-  {
-    q:"Where did we try to meet for the first time? 🌸",
-    options:["India Gate","CP","Dada Dev"],
-    answer:"Dada Dev"
-  },
-  {
-    q:"What do I call you the most? 💗",
-    options:["Aviii","Baby","Darlaaa"],
-    answer:"Aviii"
-  },
-  {
-    q:"who said to me helloo papa ? 🥺",
-    options:["virajj","vishuu","Aviii","ivu"],
-    answer:"ivu"
-  },
-  {
-    q:"what was my nickname before Yuvu 🌍?",
-    options:["yuviee","Yuvieka💅✨","yuvrajjjjj"],
-    answer:"Yuvieka💅✨"
-  },
-  {
-    q:"what do you owe me after boards?????? ✨✨",
-    options:[
-      "your timeee",
-      "clutcher",
-      "coffee date",
-      "strap bracelet/rubberband",
-      "all of the above✨"
-    ],
-    answer:"all of the above✨"
-  },
-  {
-    q:"Will you be my Valentine? 💘",
-    options:["Yes","No"],
-    answer:"Yes",
-    special:true
-  }
-];
-
 let step = -1;
 let locked = false;
 
-/* 🔧 HELPERS */
-function vibrate(ms){
-  if(navigator.vibrate) navigator.vibrate(ms);
-}
+/* 💌 QUESTIONS */
+const quiz = [
+  { q:"When did we first text? 💬", options:["18th Jan 2025","20th Jan 2025","14th Feb 2025"], answer:"18th Jan 2025" },
+  { q:"When did you feel it but didn’t say it yet? ❤️", options:["16th July 2025","1st July 2025","21st Aug 2025"], answer:"16th July 2025" },
+  { q:"Where did we try to meet for the first time? 🌸", options:["India Gate","CP","Dada Dev"], answer:"Dada Dev" },
+  { q:"What do I call you the most? 💗", options:["Aviii","Baby","Darlaaa"], answer:"Aviii" },
+  { q:"who said to me helloo papa? 🥺", options:["virajj","vishuu","Aviii","ivu"], answer:"ivu" },
+  { q:"what was my nickname before Yuvu? 🌍", options:["yuviee","Yuvieka💅✨","yuvrajjjjj"], answer:"Yuvieka💅✨" },
+  { q:"what do you owe me after boards? ✨", options:["your timeee","clutcher","coffee date","strap bracelet/rubberband","all of the above✨"], answer:"all of the above✨" },
+  { q:"Will you be my Valentine? 💘", options:["Yes","No"], answer:"Yes", special:true }
+];
 
-function show(html){
-  card.innerHTML = html;
-}
+/* 🧠 HELPERS */
+function vibrate(ms){ if(navigator.vibrate) navigator.vibrate(ms); }
 
 function popup(text){
   const p=document.createElement("div");
   p.className="popup";
-  p.innerText=text;
+  p.textContent=text;
   document.body.appendChild(p);
   setTimeout(()=>p.remove(),1500);
 }
 
 function hearts(){
-  for(let i=0;i<15;i++){
+  for(let i=0;i<12;i++){
     const h=document.createElement("div");
     h.className="heart";
-    h.innerText="❤️";
+    h.textContent="❤️";
     h.style.left=Math.random()*100+"vw";
     h.style.bottom="30px";
     document.body.appendChild(h);
@@ -88,33 +145,30 @@ function hearts(){
   }
 }
 
-/* 🔐 PASSCODE */
+function render(html){ card.innerHTML = html; }
+
+/* 🔐 PASSCODE SCREEN */
 function showPass(){
-  show(`
+  render(`
     <h3>🔐 Enter Passcode</h3>
     <p>218 — sign of God embedded in us ✨</p>
     <input id="pass" type="password"
-      style="width:100%;padding:12px;
-      font-size:18px;text-align:center;
-      border-radius:10px;border:1px solid #ccc">
-    <button id="unlock">Unlock 💖</button>
+      style="width:100%;padding:12px;font-size:18px;text-align:center;border-radius:10px;border:1px solid #ccc">
+    <button id="unlock" class="primary">Unlock 💖</button>
   `);
-  document.getElementById("unlock").onclick = checkPass;
-}
 
-function checkPass(){
-  const v=parseInt(
-    document.getElementById("pass").value.replace(/\D/g,""),10
-  );
-  if(v===PASSCODE){
-    song.currentTime=46;
-    song.play().catch(()=>{});
-    step=0;
-    showQuestion();
-  } else {
-    vibrate(200);
-    popup("Wrong passcode 😤");
-  }
+  document.getElementById("unlock").addEventListener("click", ()=>{
+    const val = parseInt(document.getElementById("pass").value.replace(/\D/g,""),10);
+    if(val===PASSCODE){
+      song.currentTime=46;
+      song.play().catch(()=>{});
+      step=0;
+      showQuestion();
+    } else {
+      vibrate(200);
+      popup("Wrong passcode 😤");
+    }
+  });
 }
 
 /* ❓ QUESTIONS */
@@ -125,25 +179,23 @@ function showQuestion(){
   q.options.forEach(o=>{
     html+=`<button class="option">${o}</button>`;
   });
-  show(html);
+  render(html);
 
-  card.querySelectorAll(".option").forEach(b=>{
-    b.onclick=()=>checkAnswer(b.innerText);
+  card.querySelectorAll("button").forEach(btn=>{
+    btn.addEventListener("click",()=>checkAnswer(btn.textContent));
   });
 }
 
 function checkAnswer(choice){
   if(locked) return;
   locked=true;
-
   const q=quiz[step];
 
-  /* 💘 VALENTINE LOGIC */
   if(q.special && choice==="No"){
     vibrate([100,50,100]);
     popup("nopesss ❌ system error 😌 you are already my valentine forever ♾️");
     hearts();
-    setTimeout(()=>locked=false,1300); // retry SAME question
+    setTimeout(()=>locked=false,1300);
     return;
   }
 
@@ -164,7 +216,7 @@ function nextStep(){
   if(step<quiz.length){
     showQuestion();
   } else {
-    show(`
+    render(`
       <h3>Forever 💖</h3>
       <p style="font-size:14px;line-height:1.6">
         mera baccha i loveeeeee u  
@@ -180,8 +232,11 @@ function nextStep(){
   }
 }
 
-/* 🚀 START */
+/* 🚀 START SAFELY */
 showPass();
 
-};
+})(); 
 </script>
+
+</body>
+</html>
