@@ -7,42 +7,31 @@
 
 <style>
 *{box-sizing:border-box;font-family:Arial,sans-serif}
-html,body{margin:0;height:100%;background:#000;overflow:hidden}
+html,body{margin:0;height:100%;overflow:hidden}
 
 #bgVideo{
-  position:fixed;
-  inset:0;
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  z-index:-2;
-  display:none;
-  background:#000;
+  position:fixed;inset:0;
+  width:100%;height:100%;
+  object-fit:cover;z-index:-2
 }
-
 .overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.45);
-  z-index:-1;
+  position:fixed;inset:0;
+  background:rgba(0,0,0,.45);z-index:-1
 }
-
 .container{
   height:100%;
   display:flex;
   justify-content:center;
-  align-items:center;
+  align-items:center
 }
-
 .card{
   background:#fff;
   width:90%;
   max-width:360px;
   padding:22px;
   border-radius:18px;
-  text-align:center;
+  text-align:center
 }
-
 button{
   width:100%;
   padding:14px;
@@ -50,11 +39,15 @@ button{
   border:none;
   border-radius:12px;
   font-size:16px;
-  cursor:pointer;
+  background:#ff5f8a;
+  color:#fff;
+  cursor:pointer
 }
-
-.primary{background:#ff5f8a;color:#fff}
-.option{background:#f3f3f3}
+.option{
+  background:#f3f3f3;
+  color:#333
+}
+.option:hover{background:#ffd6e1}
 
 .popup{
   position:fixed;
@@ -62,18 +55,18 @@ button{
   left:50%;
   transform:translateX(-50%);
   background:#fff;
-  padding:12px 20px;
+  padding:12px 22px;
   border-radius:30px;
   font-weight:bold;
-  z-index:999;
+  z-index:99
 }
 
+/* ❤️ HEART CONFETTI */
 .heart{
   position:fixed;
   font-size:24px;
   animation:floatUp 1.5s linear forwards;
 }
-
 @keyframes floatUp{
   from{transform:translateY(0);opacity:1}
   to{transform:translateY(-120px);opacity:0}
@@ -83,35 +76,85 @@ button{
 
 <body>
 
-<video id="bgVideo" muted loop playsinline preload="auto">
+<video id="bgVideo" autoplay muted loop playsinline>
   <source src="background.mp4" type="video/mp4">
 </video>
-
 <div class="overlay"></div>
+
 <audio id="song" src="jogan.mp3" preload="auto"></audio>
 
 <div class="container">
-  <div class="card" id="card"></div>
+  <div class="card" id="card">Loading…</div>
 </div>
 
 <script>
+window.onload = function(){
+
 const card = document.getElementById("card");
-const video = document.getElementById("bgVideo");
-const song  = document.getElementById("song");
+const song = document.getElementById("song");
 const PASSCODE = 218;
 
-function vibrate(ms){ if(navigator.vibrate) navigator.vibrate(ms); }
+/* 💌 QUIZ QUESTIONS (ORDER ARRANGED) */
+const quiz = [
+  {
+    q:"When did we first text? 💬",
+    options:["18th Jan 2025","20th Jan 2025","14th Feb 2025"],
+    answer:"18th Jan 2025"
+  },
+  {
+    q:"When did you feel it but didn’t say it yet? ❤️",
+    options:["16th July 2025","1st July 2025","21st Aug 2025"],
+    answer:"16th July 2025"
+  },
+  {
+    q:"Where did we try to meet for the first time? 🌸",
+    options:["India Gate","CP","Dada Dev"],
+    answer:"Dada Dev"
+  },
+  {
+    q:"What do I call you the most? 💗",
+    options:["Aviii","Baby","Darlaaa"],
+    answer:"Aviii"
+  },
+  {
+  q:"who said to me helloo papa ? ",
+  options:["virajj","vishuu","Aviii","ivu"],
+  answer:"ivu"
+},
+  {
+  q:"what was my nickname before Yuvu🌍? 💗",
+  options:["yuviee","Yuvieka💅✨","yuvrajjjjj"],
+  answer:"Yuvieka💅✨"
+},
+  {
+  q:"what do you owe me after boards?????? ✨✨",
+  options:["your timeee","clutcher","coffee date","strap bracelet/rubberband","all of the above✨"],
+  answer:"all of the above✨"
+},
+ {
+    q:"Will you be my Valentine? 💘",
+    options:["Yes","No"],
+    answer:"Yes",
+    special:true
+  }
+];
 
-function popup(t){
-  const p=document.createElement("div");
+let step = -1;
+let locked = false;
+
+/* 🧠 UTILS */
+function show(html){ card.innerHTML = html; }
+
+function popup(text){
+  const p = document.createElement("div");
   p.className="popup";
-  p.innerText=t;
+  p.innerText=text;
   document.body.appendChild(p);
   setTimeout(()=>p.remove(),1500);
 }
 
 function hearts(){
-  for(let i=0;i<10;i++){
+  for(let i=0;i<15;i++){
     const h=document.createElement("div");
     h.className="heart";
     h.innerText="❤️";
@@ -122,41 +165,81 @@ function hearts(){
   }
 }
 
-/* TAP TO START — THIS IS CRITICAL */
-card.innerHTML = `
-  <h3>Tap to Begin 💖</h3>
-  <p>This surprise needs one tap…</p>
-  <button class="primary" id="start">Start</button>
-`;
-
-document.getElementById("start").onclick = async ()=>{
-  try{
-    video.style.display="block";
-    await video.play();
-  }catch(e){
-    console.log("Video blocked:", e);
-  }
-  showPass();
-};
-
+/* 🔐 PASSCODE */
 function showPass(){
-  card.innerHTML=`
+  show(`
     <h3>🔐 Enter Passcode</h3>
+    <p>218 — sign of God embedded in us ✨</p>
     <input id="pass" type="password"
-      style="width:100%;padding:12px;font-size:18px;text-align:center;border-radius:10px">
-    <button class="primary" id="unlock">Unlock 💖</button>
-  `;
-  document.getElementById("unlock").onclick = unlock;
+      style="width:100%;padding:12px;
+      font-size:18px;text-align:center;
+      border-radius:10px;border:1px solid #ccc">
+    <button id="unlock">Unlock 💖</button>
+  `);
+  document.getElementById("unlock").onclick = checkPass;
 }
 
-async function unlock(){
-  const v=parseInt(document.getElementById("pass").value,10);
-  if(v!==PASSCODE){ vibrate(200); popup("Wrong passcode 😤"); return; }
-
-  try{ song.currentTime=46; await song.play(); }catch(e){}
-  card.innerHTML="<h3>It worked ❤️</h3><p>If video is visible, we won.</p>";
+function checkPass(){
+  const v = parseInt(
+    document.getElementById("pass").value.replace(/\D/g,""),10
+  );
+  if(v===PASSCODE){
+    song.currentTime=46;
+    song.play().catch(()=>{});
+    step=0;
+    showQuestion();
+  } else popup("Wrong passcode 😤");
 }
+
+/* ❓ QUESTIONS */
+function showQuestion(){
+  locked=false;
+  const q=quiz[step];
+  let html=`<h3>${q.q}</h3>`;
+  q.options.forEach(o=>{
+    html+=`<button class="option">${o}</button>`;
+  });
+  show(html);
+
+  card.querySelectorAll(".option").forEach(b=>{
+    b.onclick=()=>checkAnswer(b.innerText);
+  });
+}
+
+function checkAnswer(choice){
+  if(locked) return;
+  locked=true;
+
+  const q=quiz[step];
+
+  if(q.special && choice==="No"){
+    popup("nopesss ❌ system error 😌 you are already my valentine forever ♾️");
+    hearts();
+    setTimeout(nextStep,1500);
+    return;
+  }
+
+  if(choice===q.answer){
+    popup("mwwwwwaaaaaaaaaaaaaahhhhhh 😘");
+    hearts();
+    setTimeout(nextStep,1400);
+  } else {
+    popup("try again darlaaa 🥺");
+    setTimeout(()=>locked=false,1200);
+  }
+}
+
+function nextStep(){
+  step++;
+  if(step<quiz.length) showQuestion();
+  else show("<h3>Forever 💖</h3><p>You were always the answer.</p>");
+}
+
+/* 🚀 START */
+showPass();
+
+};
 </script>
-
 </body>
 </html>
+
