@@ -2,176 +2,232 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>For My Aviii 💗</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For My Aviii 💖</title>
 
 <style>
-* { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-body { margin:0; height:100vh; overflow:hidden; }
-
-/* VIDEO BG */
-video.bg-video{
-  position:fixed; inset:0; width:100vw; height:100vh;
-  object-fit:cover; z-index:-2;
-}
-.overlay{
-  position:fixed; inset:0;
-  background:rgba(0,0,0,.45);
-  backdrop-filter: blur(2px);
-  z-index:-1;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
 }
 
-/* LAYOUT */
-.container{
-  height:100vh; display:flex; align-items:center; justify-content:center;
-}
-.card{
-  background:rgba(255,255,255,.95);
-  width:92%; max-width:380px;
-  padding:22px; border-radius:22px;
-  text-align:center;
-  box-shadow:0 15px 40px rgba(0,0,0,.3);
-  animation:fade .5s ease;
+body, html {
+  height: 100%;
+  overflow: hidden;
+  color: white;
 }
 
-h1{ font-size:20px; margin-bottom:12px; color:#222; }
-p{ font-size:14px; color:#555; }
-
-button{
-  width:100%; padding:15px; margin:7px 0;
-  border:none; border-radius:28px;
-  background:#ff5c8a; color:#fff; font-size:15px;
-}
-button:active{ transform:scale(.97); }
-
-.lock-input{
-  width:100%; padding:14px; margin-bottom:12px;
-  border-radius:25px; border:1px solid #ddd;
-  font-size:16px; text-align:center;
+video {
+  position: fixed;
+  top: 0;
+  left: 0;
+  min-width: 100%;
+  min-height: 100%;
+  object-fit: cover;
+  z-index: -1;
 }
 
-/* FEEDBACK */
-.feedback{
-  margin-top:12px; font-size:18px;
-  animation:pop .45s ease;
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
 }
-.correct{ color:#ff2f73; }
-.wrong{ color:#777; }
 
-/* HEARTS */
-.heart{
-  position:absolute; font-size:16px; opacity:.8;
-  animation:float 6s linear forwards;
+.card {
+  position: absolute;
+  bottom: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 380px;
+  background: rgba(0,0,0,0.65);
+  border-radius: 20px;
+  padding: 20px;
+  text-align: center;
+  animation: fadeIn 0.6s ease;
 }
-.beat{ animation: beatPulse .25s ease; }
 
-@keyframes float{
-  0%{ transform:translateY(100vh) scale(.9); opacity:0; }
-  10%{ opacity:1; }
-  100%{ transform:translateY(-10vh) scale(1.1); opacity:0; }
+h2 {
+  font-size: 20px;
+  margin-bottom: 15px;
 }
-@keyframes beatPulse{
-  from{ transform:scale(1); }
-  50%{ transform:scale(1.25); }
-  to{ transform:scale(1); }
+
+.option {
+  background: rgba(255,255,255,0.15);
+  margin: 10px 0;
+  padding: 14px;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: 0.3s;
 }
-@keyframes pop{
-  from{ transform:scale(.6); opacity:0; }
-  to{ transform:scale(1); opacity:1; }
+
+.option:hover {
+  background: rgba(255,255,255,0.3);
 }
-@keyframes fade{
-  from{ opacity:0; transform:translateY(12px); }
-  to{ opacity:1; transform:translateY(0); }
+
+input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  margin-bottom: 12px;
+  text-align: center;
+  font-size: 18px;
+}
+
+.feedback {
+  margin-top: 15px;
+  font-size: 18px;
+  animation: pop 0.4s ease;
+}
+
+@keyframes pop {
+  0% {transform: scale(0.8); opacity: 0;}
+  100% {transform: scale(1); opacity: 1;}
+}
+
+@keyframes fadeIn {
+  from {opacity: 0; transform: translate(-50%, 20px);}
+  to {opacity: 1; transform: translate(-50%, 0);}
 }
 </style>
 </head>
 
 <body>
 
-<!-- VIDEO -->
-<video class="bg-video" autoplay muted loop playsinline>
-  <source src="background.mp4" type="video/mp4">
+<!-- BACKGROUND VIDEO -->
+<video autoplay muted loop playsinline>
+  <source src="VID_20260202_225153_891.mp4" type="video/mp4">
 </video>
+
 <div class="overlay"></div>
 
-<!-- MUSIC (Spotify Jogan @ 46s; plays after first tap) -->
-<iframe id="music" style="display:none"
-  src="https://open.spotify.com/embed/track/0zYDfsYRJIK0dmRUzoEJs9?start=46"
-  allow="autoplay; encrypted-media;"></iframe>
+<div class="card" id="card"></div>
 
-<div class="container">
-  <div class="card" id="app">
-    <h1>🔒 Enter Passcode</h1>
-    <p>218 — the sign of God<br>embedded in both of our birthdates ✨</p>
-    <input class="lock-input" id="code" type="password" placeholder="Enter passcode">
-    <button onclick="unlock()">Unlock 💗</button>
-  </div>
-</div>
+<!-- OPTIONAL AUDIO (replace jogan.mp3 with real file if you want autoplay) -->
+<!--
+<audio id="bgm" src="jogan.mp3"></audio>
+-->
+
+<!-- SPOTIFY EMBED (manual play) -->
+<iframe style="display:none"
+src="https://open.spotify.com/embed/track/0zYDfsYRJIK0dmRUzoEJs9"
+width="0" height="0" frameborder="0"
+allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture">
+</iframe>
 
 <script>
-/* ---------- VIBRATION HELPERS ---------- */
-const vibe = (pattern)=> { if(navigator.vibrate) navigator.vibrate(pattern); };
+const card = document.getElementById("card");
+let index = 0;
 
-/* ---------- UNLOCK ---------- */
-function unlock(){
-  if(document.getElementById('code').value==="218"){
-    document.getElementById('music').style.display="block";
-    startQuiz();
-  }else{
-    vibe([60,40,60]);
-    alert("❌ Wrong code 😌");
+const quiz = [
+  {
+    q: "🔐 Enter Passcode",
+    input: true,
+    correct: "218",
+    note: "218 — the sign of God embedded in both of our birthdates ✨"
+  },
+  {
+    q: "When did we first text?",
+    options: ["12 Jan 2025", "18 Jan 2025", "21 Feb 2025", "10 Jan 2025"],
+    correct: "18 Jan 2025"
+  },
+  {
+    q: "When did you accept you felt it… but didn’t say?",
+    options: ["10 June 2025", "16 July 2025", "20 Aug 2025", "1 July 2025"],
+    correct: "16 July 2025"
+  },
+  {
+    q: "Where did we try to meet for the first time?",
+    options: ["India Gate", "Select City Walk", "Dada Dev", "CP"],
+    correct: "Dada Dev"
+  },
+  {
+    q: "Who falls first? 😌",
+    options: ["You", "Me", "Both", "Destiny"],
+    correct: "Both"
+  },
+  {
+    q: "What are we?",
+    options: ["Talking", "Confusing", "Unreal", "Ours"],
+    correct: "Ours"
+  },
+  {
+    q: "What do I call you?",
+    options: ["Baby", "Aviii", "Darlaaa", "All of these"],
+    correct: "All of these"
+  },
+  {
+    q: "What are we building?",
+    options: ["Moments", "Memories", "Forever", "Everything"],
+    correct: "Everything"
+  },
+  {
+    q: "Do you feel safe here?",
+    options: ["Yes", "Always", "With you", "All"],
+    correct: "All"
+  },
+  {
+    q: "💌 Will you be my Valentine?",
+    options: ["Yes", "No"],
+    correct: "Yes"
   }
-}
-
-/* ---------- QUIZ DATA ---------- */
-const quizData=[
-  {q:"Who is the cutest girl in the world? 💕",options:["Aviii 😌","Still Aviii 💗","Obviously Aviii"],correct:0},
-  {q:"What was the date when we first texted?",options:["18th Jan 2025","21st Feb 2025","16th July 2025","1st March 2025"],correct:0},
-  {q:"When did you accept you felt it but didn’t tell?",options:["16th July 2025","18th Jan 2025","5th May 2025","10th Aug 2025"],correct:0},
-  {q:"Where did we try to meet for the first time?",options:["Dada Dev","India Gate","Select City Walk","CP Inner Circle"],correct:0},
-  {q:"Who makes my bad days better instantly?",options:["You 💗","Aviii 😌","Only You"],correct:0},
-  {q:"Who feels like home to me?",options:["You","Aviii","My Person"],correct:0},
-  {q:"Who owns my heart completely?",options:["You 💗","Aviii 😌","Still You"],correct:0},
-  {q:"Who is my favourite person?",options:["Aviii","You","Always You"],correct:0},
-  {q:"Who am I endlessly proud of?",options:["You","Aviii","Always You"],correct:0},
-  {q:"Will you be my Valentine? 💘",options:["YES 💗","NO 🙄"],correct:0}
 ];
-let index=0;
 
-/* ---------- QUIZ ---------- */
-function startQuiz(){ index=0; render(); }
-function render(){
-  const q=quizData[index];
-  let btns="";
-  q.options.forEach((o,i)=>btns+=`<button onclick="answer(${i})">${o}</button>`);
-  app().innerHTML=`<h1>${q.q}</h1>${btns}<div id="fb"></div>`;
+function showQuestion() {
+  const q = quiz[index];
+  card.innerHTML = `<h2>${q.q}</h2>`;
+
+  if (q.input) {
+    card.innerHTML += `
+      <p style="opacity:0.8;margin-bottom:10px">${q.note}</p>
+      <input id="pass" type="password" placeholder="•••">
+      <div class="option" onclick="check(document.getElementById('pass').value)">
+        Unlock 💖
+      </div>
+    `;
+  } else {
+    q.options.forEach(opt => {
+      const div = document.createElement("div");
+      div.className = "option";
+      div.innerText = opt;
+      div.onclick = () => check(opt);
+      card.appendChild(div);
+    });
+  }
 }
-function app(){ return document.getElementById('app'); }
 
-function answer(i){
-  const fb=document.getElementById('fb');
-  // Final logic
-  if(index===quizData.length-1){
-    if(i===1){
-      fb.innerHTML=`<div class="feedback wrong">❌ Invalid answer 😌<br>You’re already my Valentine 💗</div>`;
-      vibe([80,40,80]);
-      return;
+function check(answer) {
+  const q = quiz[index];
+
+  if (answer === q.correct) {
+    card.innerHTML += `<div class="feedback">mwwwwwaaaaaaaaaaaaaaaaaahhhhhhhhhhh 💋</div>`;
+    index++;
+    setTimeout(() => {
+      if (index < quiz.length) showQuestion();
+      else end();
+    }, 1200);
+  } else {
+    if (q.q.includes("Valentine")) {
+      card.innerHTML += `<div class="feedback">❌ Invalid answer<br>You are already my Valentine 😌❤️</div>`;
+    } else {
+      card.innerHTML += `<div class="feedback">try again darlaaa 😤💖</div>`;
     }
-    vibe([120,60,120,60,180]);
-    final();
-    return;
-  }
-  if(i===quizData[index].correct){
-    fb.innerHTML=`<div class="feedback correct">💋 mwwwwwaaaaaaaaaaaaaaaaaahhhhhhhhhhh 💗</div>`;
-    vibe(60);
-    beatBurst();
-    setTimeout(()=>{ index++; render(); },1100);
-  }else{
-    fb.innerHTML=`<div class="feedback wrong">😌 try again darlaaa 💕</div>`;
-    vibe([40,40]);
   }
 }
 
-function final(){
-  app().innerHTML=`<h1>💘 Always Yours 💘</h1><p>You were never a question.<br>Just my Valentine 💗</p>`;
-  beat
+function end() {
+  card.innerHTML = `
+    <h2>Forever unlocked 💖</h2>
+    <p>You were always the answer.</p>
+  `;
+}
+
+// Start
+showQuestion();
+</script>
+
+</body>
+</html>
