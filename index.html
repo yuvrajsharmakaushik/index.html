@@ -11,11 +11,12 @@ html,body{margin:0;height:100%;overflow:hidden;background:#000}
 
 video{
   position:fixed;
-  top:0;left:0;
+  inset:0;
   width:100%;
   height:100%;
   object-fit:cover;
   z-index:-2;
+  display:none; /* hidden until user unlocks */
 }
 
 .overlay{
@@ -81,7 +82,7 @@ button{
 
 <body>
 
-<!-- 🎥 VIDEO (OLD STYLE – MOST COMPATIBLE) -->
+<!-- 🎥 BACKGROUND VIDEO -->
 <video id="bgVideo" muted loop playsinline>
   <source src="background.mp4" type="video/mp4">
 </video>
@@ -91,19 +92,10 @@ button{
 <audio id="song" src="jogan.mp3" preload="auto"></audio>
 
 <div class="container">
-  <div class="card" id="card">Loading…</div>
+  <div class="card" id="card"></div>
 </div>
 
 <script>
-/* 🚀 SAFE START AFTER DOM */
-document.addEventListener("DOMContentLoaded",function(){
-
-/* FORCE VIDEO PLAY (KEY FIX) */
-const bgVideo = document.getElementById("bgVideo");
-bgVideo.play().catch(()=>{}); // <- THIS is why old code worked
-
-const card = document.getElementById("card");
-const song = document.getElementById("song");
 const PASSCODE = 218;
 let step = -1;
 let locked = false;
@@ -118,9 +110,11 @@ const quiz = [
   {q:"Will you be my Valentine? 💘",options:["Yes","No"],answer:"Yes",special:true}
 ];
 
-function vibrate(ms){
-  if(navigator.vibrate) navigator.vibrate(ms);
-}
+const card = document.getElementById("card");
+const video = document.getElementById("bgVideo");
+const song = document.getElementById("song");
+
+function vibrate(ms){ if(navigator.vibrate) navigator.vibrate(ms); }
 
 function popup(text){
   const p=document.createElement("div");
@@ -131,7 +125,7 @@ function popup(text){
 }
 
 function hearts(){
-  for(let i=0;i<12;i++){
+  for(let i=0;i<10;i++){
     const h=document.createElement("div");
     h.className="heart";
     h.innerText="❤️";
@@ -144,58 +138,60 @@ function hearts(){
 
 function render(html){ card.innerHTML=html; }
 
-/* 🔐 PASSCODE */
+/* 🔐 PASSCODE SCREEN */
 render(`
   <h3>🔐 Enter Passcode</h3>
   <p>218 — sign of God embedded in us ✨</p>
   <input id="pass" type="password"
-   style="width:100%;padding:12px;font-size:18px;text-align:center;border-radius:10px">
+    style="width:100%;padding:12px;font-size:18px;text-align:center;border-radius:10px">
   <button id="unlock" class="primary">Unlock 💖</button>
 `);
 
-document.getElementById("unlock").onclick=function(){
-  const v=parseInt(document.getElementById("pass").value,10);
-  if(v===PASSCODE){
-    song.currentTime=46;
-    song.play().catch(()=>{});
-    step=0;
-    showQuestion();
-  }else{
+document.getElementById("unlock").onclick = async () => {
+  const val = parseInt(document.getElementById("pass").value,10);
+  if(val !== PASSCODE){
     vibrate(200);
     popup("Wrong passcode 😤");
+    return;
   }
+
+  /* 🎥 USER-GESTURE VIDEO START (100% WORKS) */
+  video.style.display = "block";
+  try{ await video.play(); }catch(e){}
+
+  /* 🎵 MUSIC */
+  song.currentTime = 46;
+  try{ await song.play(); }catch(e){}
+
+  step = 0;
+  showQuestion();
 };
 
 function showQuestion(){
   locked=false;
   const q=quiz[step];
   let html=`<h3>${q.q}</h3>`;
-  q.options.forEach(o=>{
-    html+=`<button class="option">${o}</button>`;
-  });
+  q.options.forEach(o=>html+=`<button class="option">${o}</button>`);
   render(html);
-
-  document.querySelectorAll(".option").forEach(b=>{
-    b.onclick=()=>checkAnswer(b.innerText);
-  });
+  document.querySelectorAll(".option").forEach(b=>b.onclick=()=>check(b.innerText));
 }
 
-function checkAnswer(choice){
+function check(choice){
   if(locked) return;
   locked=true;
   const q=quiz[step];
 
   if(q.special && choice==="No"){
-    vibrate([100,50,100]);
     popup("nopesss ❌ system error 😌 you are already my valentine forever ♾️");
+    vibrate([100,50,100]);
     hearts();
     setTimeout(()=>locked=false,1200);
     return;
   }
 
   if(choice===q.answer){
-    vibrate(80);
     popup("mwwwwwaaaaaaaaaaaaaahhhhhh 😘");
+    vibrate(80);
     hearts();
     setTimeout(()=>{
       step++;
@@ -213,15 +209,13 @@ function checkAnswer(choice){
         mwwwwaaaaahhhh 😘
         </p>
       `);
-    },1400);
+    },1300);
   }else{
-    vibrate(150);
     popup("try again darlaaa 🥺");
+    vibrate(150);
     setTimeout(()=>locked=false,1200);
   }
 }
-
-});
 </script>
 
 </body>
