@@ -1,92 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>For My Aviii ❤️</title>
-
-<style>
-*{box-sizing:border-box;font-family:Arial,sans-serif}
-html,body{margin:0;height:100%;overflow:hidden}
-
-#bgVideo{
-  position:fixed;inset:0;
-  width:100%;height:100%;
-  object-fit:cover;z-index:-2
-}
-.overlay{
-  position:fixed;inset:0;
-  background:rgba(0,0,0,.45);z-index:-1
-}
-.container{
-  height:100%;
-  display:flex;
-  justify-content:center;
-  align-items:center
-}
-.card{
-  background:#fff;
-  width:90%;
-  max-width:360px;
-  padding:22px;
-  border-radius:18px;
-  text-align:center
-}
-button{
-  width:100%;
-  padding:14px;
-  margin-top:12px;
-  border:none;
-  border-radius:12px;
-  font-size:16px;
-  background:#ff5f8a;
-  color:#fff;
-  cursor:pointer
-}
-.option{
-  background:#f3f3f3;
-  color:#333
-}
-.option:hover{background:#ffd6e1}
-
-.popup{
-  position:fixed;
-  bottom:40px;
-  left:50%;
-  transform:translateX(-50%);
-  background:#fff;
-  padding:12px 22px;
-  border-radius:30px;
-  font-weight:bold;
-  z-index:99
-}
-
-/* ❤️ HEART CONFETTI */
-.heart{
-  position:fixed;
-  font-size:24px;
-  animation:floatUp 1.5s linear forwards;
-}
-@keyframes floatUp{
-  from{transform:translateY(0);opacity:1}
-  to{transform:translateY(-120px);opacity:0}
-}
-</style>
-</head>
-
-<body>
-
-<video id="bgVideo" autoplay muted loop playsinline>
-  <source src="background.mp4" type="video/mp4">
-</video>
-<div class="overlay"></div>
-
-<audio id="song" src="jogan.mp3" preload="auto"></audio>
-
-<div class="container">
-  <div class="card" id="card">Loading…</div>
-</div>
-
 <script>
 window.onload = function(){
 
@@ -94,7 +5,7 @@ const card = document.getElementById("card");
 const song = document.getElementById("song");
 const PASSCODE = 218;
 
-/* 💌 QUIZ QUESTIONS (ORDER ARRANGED) */
+/* 💌 QUIZ */
 const quiz = [
   {
     q:"When did we first text? 💬",
@@ -117,21 +28,27 @@ const quiz = [
     answer:"Aviii"
   },
   {
-  q:"who said to me helloo papa ? ",
-  options:["virajj","vishuu","Aviii","ivu"],
-  answer:"ivu"
-},
+    q:"who said to me helloo papa ? 🥺",
+    options:["virajj","vishuu","Aviii","ivu"],
+    answer:"ivu"
+  },
   {
-  q:"what was my nickname before Yuvu🌍? 💗",
-  options:["yuviee","Yuvieka💅✨","yuvrajjjjj"],
-  answer:"Yuvieka💅✨"
-},
+    q:"what was my nickname before Yuvu 🌍?",
+    options:["yuviee","Yuvieka💅✨","yuvrajjjjj"],
+    answer:"Yuvieka💅✨"
+  },
   {
-  q:"what do you owe me after boards?????? ✨✨",
-  options:["your timeee","clutcher","coffee date","strap bracelet/rubberband","all of the above✨"],
-  answer:"all of the above✨"
-},
- {
+    q:"what do you owe me after boards?????? ✨✨",
+    options:[
+      "your timeee",
+      "clutcher",
+      "coffee date",
+      "strap bracelet/rubberband",
+      "all of the above✨"
+    ],
+    answer:"all of the above✨"
+  },
+  {
     q:"Will you be my Valentine? 💘",
     options:["Yes","No"],
     answer:"Yes",
@@ -142,11 +59,17 @@ const quiz = [
 let step = -1;
 let locked = false;
 
-/* 🧠 UTILS */
-function show(html){ card.innerHTML = html; }
+/* 🔧 HELPERS */
+function vibrate(ms){
+  if(navigator.vibrate) navigator.vibrate(ms);
+}
+
+function show(html){
+  card.innerHTML = html;
+}
 
 function popup(text){
-  const p = document.createElement("div");
+  const p=document.createElement("div");
   p.className="popup";
   p.innerText=text;
   document.body.appendChild(p);
@@ -180,7 +103,7 @@ function showPass(){
 }
 
 function checkPass(){
-  const v = parseInt(
+  const v=parseInt(
     document.getElementById("pass").value.replace(/\D/g,""),10
   );
   if(v===PASSCODE){
@@ -188,7 +111,10 @@ function checkPass(){
     song.play().catch(()=>{});
     step=0;
     showQuestion();
-  } else popup("Wrong passcode 😤");
+  } else {
+    vibrate(200);
+    popup("Wrong passcode 😤");
+  }
 }
 
 /* ❓ QUESTIONS */
@@ -212,18 +138,22 @@ function checkAnswer(choice){
 
   const q=quiz[step];
 
+  /* 💘 VALENTINE LOGIC */
   if(q.special && choice==="No"){
+    vibrate([100,50,100]);
     popup("nopesss ❌ system error 😌 you are already my valentine forever ♾️");
     hearts();
-    setTimeout(nextStep,1500);
+    setTimeout(()=>locked=false,1300); // retry SAME question
     return;
   }
 
   if(choice===q.answer){
+    vibrate(80);
     popup("mwwwwwaaaaaaaaaaaaaahhhhhh 😘");
     hearts();
     setTimeout(nextStep,1400);
   } else {
+    vibrate(150);
     popup("try again darlaaa 🥺");
     setTimeout(()=>locked=false,1200);
   }
@@ -231,8 +161,23 @@ function checkAnswer(choice){
 
 function nextStep(){
   step++;
-  if(step<quiz.length) showQuestion();
-  else show("<h3>Forever 💖</h3><p>You were always the answer.</p>");
+  if(step<quiz.length){
+    showQuestion();
+  } else {
+    show(`
+      <h3>Forever 💖</h3>
+      <p style="font-size:14px;line-height:1.6">
+        mera baccha i loveeeeee u  
+        i never want to be without u not even for a single day  
+        jaan dont leave me i wont be able to handle it  
+        i promise ill not run jb koi prob aayegi  
+        tere saath khada rheke sab jhel jaunga  
+        bs mera haath mt chordhna  
+        tumhe kbhi dur nhi jaane dunga  
+        mwwwwaaaaahhhh 😘
+      </p>
+    `);
+  }
 }
 
 /* 🚀 START */
@@ -240,5 +185,3 @@ showPass();
 
 };
 </script>
-</body>
-</html>
