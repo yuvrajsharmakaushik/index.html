@@ -7,16 +7,17 @@
 
 <style>
 *{box-sizing:border-box;font-family:Arial,sans-serif}
-html,body{margin:0;height:100%;overflow:hidden;background:#000}
+html,body{margin:0;height:100%;background:#000;overflow:hidden}
 
-video{
+#bgVideo{
   position:fixed;
   inset:0;
   width:100%;
   height:100%;
   object-fit:cover;
   z-index:-2;
-  display:none; /* hidden until user unlocks */
+  display:none;
+  background:#000;
 }
 
 .overlay{
@@ -52,8 +53,8 @@ button{
   cursor:pointer;
 }
 
-.option{background:#f3f3f3}
 .primary{background:#ff5f8a;color:#fff}
+.option{background:#f3f3f3}
 
 .popup{
   position:fixed;
@@ -82,13 +83,11 @@ button{
 
 <body>
 
-<!-- 🎥 BACKGROUND VIDEO -->
-<video id="bgVideo" muted loop playsinline>
+<video id="bgVideo" muted loop playsinline preload="auto">
   <source src="background.mp4" type="video/mp4">
 </video>
 
 <div class="overlay"></div>
-
 <audio id="song" src="jogan.mp3" preload="auto"></audio>
 
 <div class="container">
@@ -96,30 +95,17 @@ button{
 </div>
 
 <script>
-const PASSCODE = 218;
-let step = -1;
-let locked = false;
-
-const quiz = [
-  {q:"When did we first text? 💬",options:["18th Jan 2025","20th Jan 2025","14th Feb 2025"],answer:"18th Jan 2025"},
-  {q:"When did you feel it but didn’t say it yet? ❤️",options:["16th July 2025","1st July 2025","21st Aug 2025"],answer:"16th July 2025"},
-  {q:"Where did we try to meet first? 🌸",options:["India Gate","CP","Dada Dev"],answer:"Dada Dev"},
-  {q:"What do I call you the most? 💗",options:["Aviii","Baby","Darlaaa"],answer:"Aviii"},
-  {q:"who said helloo papa? 🥺",options:["virajj","vishuu","Aviii","ivu"],answer:"ivu"},
-  {q:"what do you owe me after boards? ✨",options:["your timeee","clutcher","coffee date","strap bracelet","all of the above✨"],answer:"all of the above✨"},
-  {q:"Will you be my Valentine? 💘",options:["Yes","No"],answer:"Yes",special:true}
-];
-
 const card = document.getElementById("card");
 const video = document.getElementById("bgVideo");
-const song = document.getElementById("song");
+const song  = document.getElementById("song");
+const PASSCODE = 218;
 
 function vibrate(ms){ if(navigator.vibrate) navigator.vibrate(ms); }
 
-function popup(text){
+function popup(t){
   const p=document.createElement("div");
   p.className="popup";
-  p.innerText=text;
+  p.innerText=t;
   document.body.appendChild(p);
   setTimeout(()=>p.remove(),1500);
 }
@@ -136,85 +122,39 @@ function hearts(){
   }
 }
 
-function render(html){ card.innerHTML=html; }
+/* TAP TO START — THIS IS CRITICAL */
+card.innerHTML = `
+  <h3>Tap to Begin 💖</h3>
+  <p>This surprise needs one tap…</p>
+  <button class="primary" id="start">Start</button>
+`;
 
-/* 🔐 PASSCODE SCREEN */
-render(`
-  <h3>🔐 Enter Passcode</h3>
-  <p>218 — sign of God embedded in us ✨</p>
-  <input id="pass" type="password"
-    style="width:100%;padding:12px;font-size:18px;text-align:center;border-radius:10px">
-  <button id="unlock" class="primary">Unlock 💖</button>
-`);
-
-document.getElementById("unlock").onclick = async () => {
-  const val = parseInt(document.getElementById("pass").value,10);
-  if(val !== PASSCODE){
-    vibrate(200);
-    popup("Wrong passcode 😤");
-    return;
+document.getElementById("start").onclick = async ()=>{
+  try{
+    video.style.display="block";
+    await video.play();
+  }catch(e){
+    console.log("Video blocked:", e);
   }
-
-  /* 🎥 USER-GESTURE VIDEO START (100% WORKS) */
-  video.style.display = "block";
-  try{ await video.play(); }catch(e){}
-
-  /* 🎵 MUSIC */
-  song.currentTime = 46;
-  try{ await song.play(); }catch(e){}
-
-  step = 0;
-  showQuestion();
+  showPass();
 };
 
-function showQuestion(){
-  locked=false;
-  const q=quiz[step];
-  let html=`<h3>${q.q}</h3>`;
-  q.options.forEach(o=>html+=`<button class="option">${o}</button>`);
-  render(html);
-  document.querySelectorAll(".option").forEach(b=>b.onclick=()=>check(b.innerText));
+function showPass(){
+  card.innerHTML=`
+    <h3>🔐 Enter Passcode</h3>
+    <input id="pass" type="password"
+      style="width:100%;padding:12px;font-size:18px;text-align:center;border-radius:10px">
+    <button class="primary" id="unlock">Unlock 💖</button>
+  `;
+  document.getElementById("unlock").onclick = unlock;
 }
 
-function check(choice){
-  if(locked) return;
-  locked=true;
-  const q=quiz[step];
+async function unlock(){
+  const v=parseInt(document.getElementById("pass").value,10);
+  if(v!==PASSCODE){ vibrate(200); popup("Wrong passcode 😤"); return; }
 
-  if(q.special && choice==="No"){
-    popup("nopesss ❌ system error 😌 you are already my valentine forever ♾️");
-    vibrate([100,50,100]);
-    hearts();
-    setTimeout(()=>locked=false,1200);
-    return;
-  }
-
-  if(choice===q.answer){
-    popup("mwwwwwaaaaaaaaaaaaaahhhhhh 😘");
-    vibrate(80);
-    hearts();
-    setTimeout(()=>{
-      step++;
-      if(step<quiz.length) showQuestion();
-      else render(`
-        <h3>Forever 💖</h3>
-        <p style="font-size:14px;line-height:1.6">
-        mera baccha i loveeeeee u<br>
-        i never want to be without u not even for a single day<br>
-        jaan dont leave me i wont be able to handle it<br>
-        i promise ill not run jb koi prob aayegi<br>
-        tere saath khada rheke sab jhel jaunga<br>
-        bs mera haath mt chordhna<br>
-        tumhe kbhi dur nhi jaane dunga<br>
-        mwwwwaaaaahhhh 😘
-        </p>
-      `);
-    },1300);
-  }else{
-    popup("try again darlaaa 🥺");
-    vibrate(150);
-    setTimeout(()=>locked=false,1200);
-  }
+  try{ song.currentTime=46; await song.play(); }catch(e){}
+  card.innerHTML="<h3>It worked ❤️</h3><p>If video is visible, we won.</p>";
 }
 </script>
 
