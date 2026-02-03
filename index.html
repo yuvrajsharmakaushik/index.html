@@ -8,7 +8,7 @@
 <style>
 * {
   box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
+  font-family: Arial, sans-serif;
 }
 
 html, body {
@@ -18,7 +18,7 @@ html, body {
   overflow: hidden;
 }
 
-/* Background Video */
+/* Background video */
 #bgVideo {
   position: fixed;
   top: 0;
@@ -29,16 +29,15 @@ html, body {
   z-index: -2;
 }
 
-/* Overlay */
+/* Dark overlay */
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.35);
-  backdrop-filter: blur(6px);
+  background: rgba(0,0,0,0.4);
   z-index: -1;
 }
 
-/* Center Card */
+/* Center container */
 .container {
   height: 100%;
   display: flex;
@@ -46,23 +45,14 @@ html, body {
   justify-content: center;
 }
 
+/* Card */
 .card {
   background: white;
   width: 90%;
-  max-width: 380px;
-  padding: 22px;
-  border-radius: 20px;
+  max-width: 360px;
+  padding: 20px;
+  border-radius: 18px;
   text-align: center;
-  animation: fadeIn 0.4s ease;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.9); }
-  to { opacity: 1; transform: scale(1); }
-}
-
-h3 {
-  margin-top: 0;
 }
 
 button {
@@ -70,7 +60,7 @@ button {
   padding: 14px;
   margin-top: 12px;
   border: none;
-  border-radius: 14px;
+  border-radius: 12px;
   font-size: 16px;
   background: #ff5f8a;
   color: white;
@@ -86,4 +76,151 @@ button {
   background: #ffd6e1;
 }
 
-/* Popup an*
+/* Popup */
+.popup {
+  position: fixed;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  padding: 12px 20px;
+  border-radius: 30px;
+  font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+
+<!-- Background Video -->
+<video id="bgVideo" autoplay muted loop playsinline>
+  <source src="background.mp4" type="video/mp4">
+</video>
+
+<div class="overlay"></div>
+
+<!-- Audio -->
+<audio id="song" src="jogan.mp3" preload="auto"></audio>
+
+<div class="container">
+  <div class="card" id="card">
+    Loading...
+  </div>
+</div>
+
+<script>
+/* ===== SAFE START AFTER PAGE LOAD ===== */
+window.onload = function () {
+
+  const card = document.getElementById("card");
+  const song = document.getElementById("song");
+
+  const PASSCODE = 218;
+
+  const quiz = [
+    {
+      q: "When did we first text? 💬",
+      options: ["18th Jan 2025", "20th Jan 2025", "14th Feb 2025"],
+      answer: "18th Jan 2025"
+    },
+    {
+      q: "When did you accept you felt it but didn’t say it? ❤️",
+      options: ["16th July 2025", "1st July 2025", "21st Aug 2025"],
+      answer: "16th July 2025"
+    },
+    {
+      q: "Where did we try to meet for the first time? 🌸",
+      options: ["India Gate", "Dada Dev", "CP"],
+      answer: "Dada Dev"
+    },
+    {
+      q: "Will you be my Valentine? 💘",
+      options: ["Yes", "No"],
+      answer: "Yes"
+    }
+  ];
+
+  let step = -1;
+  let locked = false;
+
+  function show(html) {
+    card.innerHTML = html;
+  }
+
+  function popup(text) {
+    const p = document.createElement("div");
+    p.className = "popup";
+    p.innerText = text;
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 1400);
+  }
+
+  function showPasscode() {
+    show(`
+      <h3>🔐 Enter Passcode</h3>
+      <p>218 — the sign of God embedded in both our birthdates ✨</p>
+      <input id="pass" type="password"
+        style="padding:12px;width:100%;border-radius:10px;
+        border:1px solid #ccc;font-size:18px;text-align:center">
+      <button id="unlockBtn">Unlock 💖</button>
+    `);
+
+    document.getElementById("unlockBtn").onclick = checkPass;
+  }
+
+  function checkPass() {
+    const raw = document.getElementById("pass").value;
+    const cleaned = parseInt(raw.replace(/\D/g, ""), 10);
+
+    if (cleaned === PASSCODE) {
+      song.currentTime = 46;
+      song.play().catch(()=>{});
+      step = 0;
+      showQuestion();
+    } else {
+      popup("Wrong passcode 😤");
+    }
+  }
+
+  function showQuestion() {
+    locked = false;
+    const q = quiz[step];
+    let html = `<h3>${q.q}</h3>`;
+    q.options.forEach(opt => {
+      html += `<button class="option">${opt}</button>`;
+    });
+    show(html);
+
+    const buttons = card.querySelectorAll(".option");
+    buttons.forEach(btn => {
+      btn.onclick = () => checkAnswer(btn.innerText);
+    });
+  }
+
+  function checkAnswer(choice) {
+    if (locked) return;
+    locked = true;
+
+    if (choice === quiz[step].answer) {
+      popup("mwwwwwaaaaaaaaaaaaaahhhhhh 😘");
+      setTimeout(() => {
+        step++;
+        if (step < quiz.length) {
+          showQuestion();
+        } else {
+          show(`<h3>Forever unlocked 💖</h3><p>You were always the answer.</p>`);
+        }
+      }, 1300);
+    } else {
+      popup("try again darlaaa 🥺");
+      setTimeout(() => locked = false, 1200);
+    }
+  }
+
+  // START
+  showPasscode();
+};
+</script>
+
+</body>
+</html>
