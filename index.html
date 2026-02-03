@@ -7,14 +7,8 @@
 
 <style>
 *{box-sizing:border-box;font-family:Arial,sans-serif}
-html,body{
-  margin:0;
-  height:100%;
-  overflow:hidden;
-  background:#000;
-}
+html,body{margin:0;height:100%;overflow:hidden;background:#000}
 
-/* 🎥 BACKGROUND VIDEO (OLD WORKING STYLE) */
 video{
   position:fixed;
   top:0;left:0;
@@ -24,7 +18,6 @@ video{
   z-index:-2;
 }
 
-/* DARK OVERLAY */
 .overlay{
   position:fixed;
   inset:0;
@@ -32,12 +25,11 @@ video{
   z-index:-1;
 }
 
-/* CENTER CARD */
 .container{
   height:100%;
   display:flex;
-  align-items:center;
   justify-content:center;
+  align-items:center;
 }
 
 .card{
@@ -57,36 +49,29 @@ button{
   border-radius:12px;
   font-size:16px;
   cursor:pointer;
-  background:#ff5f8a;
-  color:#fff;
 }
 
-.option{
-  background:#f3f3f3;
-  color:#333;
-}
+.option{background:#f3f3f3}
+.primary{background:#ff5f8a;color:#fff}
 
-.option:hover{background:#ffd6e1}
-
-/* POPUP */
 .popup{
   position:fixed;
   bottom:40px;
   left:50%;
   transform:translateX(-50%);
   background:#fff;
-  padding:12px 22px;
+  padding:12px 20px;
   border-radius:30px;
   font-weight:bold;
-  z-index:99;
+  z-index:999;
 }
 
-/* HEARTS */
 .heart{
   position:fixed;
   font-size:24px;
   animation:floatUp 1.5s linear forwards;
 }
+
 @keyframes floatUp{
   from{transform:translateY(0);opacity:1}
   to{transform:translateY(-120px);opacity:0}
@@ -96,8 +81,8 @@ button{
 
 <body>
 
-<!-- 🎥 BACKGROUND VIDEO -->
-<video autoplay muted loop playsinline>
+<!-- 🎥 VIDEO (OLD STYLE – MOST COMPATIBLE) -->
+<video id="bgVideo" muted loop playsinline>
   <source src="background.mp4" type="video/mp4">
 </video>
 
@@ -110,9 +95,12 @@ button{
 </div>
 
 <script>
-/* ===============================
-   SAFE, SIMPLE, STABLE JS
-================================ */
+/* 🚀 SAFE START AFTER DOM */
+document.addEventListener("DOMContentLoaded",function(){
+
+/* FORCE VIDEO PLAY (KEY FIX) */
+const bgVideo = document.getElementById("bgVideo");
+bgVideo.play().catch(()=>{}); // <- THIS is why old code worked
 
 const card = document.getElementById("card");
 const song = document.getElementById("song");
@@ -120,22 +108,20 @@ const PASSCODE = 218;
 let step = -1;
 let locked = false;
 
-/* 💌 QUESTIONS */
 const quiz = [
   {q:"When did we first text? 💬",options:["18th Jan 2025","20th Jan 2025","14th Feb 2025"],answer:"18th Jan 2025"},
   {q:"When did you feel it but didn’t say it yet? ❤️",options:["16th July 2025","1st July 2025","21st Aug 2025"],answer:"16th July 2025"},
-  {q:"Where did we try to meet for the first time? 🌸",options:["India Gate","CP","Dada Dev"],answer:"Dada Dev"},
+  {q:"Where did we try to meet first? 🌸",options:["India Gate","CP","Dada Dev"],answer:"Dada Dev"},
   {q:"What do I call you the most? 💗",options:["Aviii","Baby","Darlaaa"],answer:"Aviii"},
-  {q:"who said to me helloo papa? 🥺",options:["virajj","vishuu","Aviii","ivu"],answer:"ivu"},
-  {q:"what was my nickname before Yuvu? 🌍",options:["yuviee","Yuvieka💅✨","yuvrajjjjj"],answer:"Yuvieka💅✨"},
-  {q:"what do you owe me after boards? ✨",options:["your timeee","clutcher","coffee date","strap bracelet/rubberband","all of the above✨"],answer:"all of the above✨"},
+  {q:"who said helloo papa? 🥺",options:["virajj","vishuu","Aviii","ivu"],answer:"ivu"},
+  {q:"what do you owe me after boards? ✨",options:["your timeee","clutcher","coffee date","strap bracelet","all of the above✨"],answer:"all of the above✨"},
   {q:"Will you be my Valentine? 💘",options:["Yes","No"],answer:"Yes",special:true}
 ];
 
-/* UTIL */
 function vibrate(ms){
   if(navigator.vibrate) navigator.vibrate(ms);
 }
+
 function popup(text){
   const p=document.createElement("div");
   p.className="popup";
@@ -143,6 +129,7 @@ function popup(text){
   document.body.appendChild(p);
   setTimeout(()=>p.remove(),1500);
 }
+
 function hearts(){
   for(let i=0;i<12;i++){
     const h=document.createElement("div");
@@ -154,22 +141,20 @@ function hearts(){
     setTimeout(()=>h.remove(),1500);
   }
 }
-function show(html){ card.innerHTML = html; }
 
-/* PASSCODE */
-function showPass(){
-  show(`
-    <h3>🔐 Enter Passcode</h3>
-    <p>218 — sign of God embedded in us ✨</p>
-    <input id="pass" type="password"
-      style="width:100%;padding:12px;font-size:18px;text-align:center;border-radius:10px;border:1px solid #ccc">
-    <button id="unlock">Unlock 💖</button>
-  `);
-  document.getElementById("unlock").onclick = checkPass;
-}
+function render(html){ card.innerHTML=html; }
 
-function checkPass(){
-  const v=parseInt(document.getElementById("pass").value.replace(/\D/g,""),10);
+/* 🔐 PASSCODE */
+render(`
+  <h3>🔐 Enter Passcode</h3>
+  <p>218 — sign of God embedded in us ✨</p>
+  <input id="pass" type="password"
+   style="width:100%;padding:12px;font-size:18px;text-align:center;border-radius:10px">
+  <button id="unlock" class="primary">Unlock 💖</button>
+`);
+
+document.getElementById("unlock").onclick=function(){
+  const v=parseInt(document.getElementById("pass").value,10);
   if(v===PASSCODE){
     song.currentTime=46;
     song.play().catch(()=>{});
@@ -179,9 +164,8 @@ function checkPass(){
     vibrate(200);
     popup("Wrong passcode 😤");
   }
-}
+};
 
-/* QUESTIONS */
 function showQuestion(){
   locked=false;
   const q=quiz[step];
@@ -189,9 +173,9 @@ function showQuestion(){
   q.options.forEach(o=>{
     html+=`<button class="option">${o}</button>`;
   });
-  show(html);
+  render(html);
 
-  card.querySelectorAll(".option").forEach(b=>{
+  document.querySelectorAll(".option").forEach(b=>{
     b.onclick=()=>checkAnswer(b.innerText);
   });
 }
@@ -205,7 +189,7 @@ function checkAnswer(choice){
     vibrate([100,50,100]);
     popup("nopesss ❌ system error 😌 you are already my valentine forever ♾️");
     hearts();
-    setTimeout(()=>locked=false,1300);
+    setTimeout(()=>locked=false,1200);
     return;
   }
 
@@ -213,7 +197,23 @@ function checkAnswer(choice){
     vibrate(80);
     popup("mwwwwwaaaaaaaaaaaaaahhhhhh 😘");
     hearts();
-    setTimeout(nextStep,1400);
+    setTimeout(()=>{
+      step++;
+      if(step<quiz.length) showQuestion();
+      else render(`
+        <h3>Forever 💖</h3>
+        <p style="font-size:14px;line-height:1.6">
+        mera baccha i loveeeeee u<br>
+        i never want to be without u not even for a single day<br>
+        jaan dont leave me i wont be able to handle it<br>
+        i promise ill not run jb koi prob aayegi<br>
+        tere saath khada rheke sab jhel jaunga<br>
+        bs mera haath mt chordhna<br>
+        tumhe kbhi dur nhi jaane dunga<br>
+        mwwwwaaaaahhhh 😘
+        </p>
+      `);
+    },1400);
   }else{
     vibrate(150);
     popup("try again darlaaa 🥺");
@@ -221,29 +221,7 @@ function checkAnswer(choice){
   }
 }
 
-function nextStep(){
-  step++;
-  if(step<quiz.length){
-    showQuestion();
-  }else{
-    show(`
-      <h3>Forever 💖</h3>
-      <p style="font-size:14px;line-height:1.6">
-        mera baccha i loveeeeee u  
-        i never want to be without u not even for a single day  
-        jaan dont leave me i wont be able to handle it  
-        i promise ill not run jb koi prob aayegi  
-        tere saath khada rheke sab jhel jaunga  
-        bs mera haath mt chordhna  
-        tumhe kbhi dur nhi jaane dunga  
-        mwwwwaaaaahhhh 😘
-      </p>
-    `);
-  }
-}
-
-/* START */
-showPass();
+});
 </script>
 
 </body>
