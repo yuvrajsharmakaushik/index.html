@@ -94,7 +94,7 @@ const card = document.getElementById("card");
 const song = document.getElementById("song");
 const PASSCODE = 218;
 
-/* 💌 QUIZ QUESTIONS (ORDER ARRANGED) */
+/* 💌 QUIZ QUESTIONS */
 const quiz = [
   {
     q:"When did we first text? 💬",
@@ -117,21 +117,21 @@ const quiz = [
     answer:"Aviii"
   },
   {
-  q:"who said to me helloo papa ? ",
-  options:["virajj","vishuu","Aviii","ivu"],
-  answer:"ivu"
-},
+    q:"who said to me helloo papa ? ",
+    options:["virajj","vishuu","Aviii","ivu"],
+    answer:"ivu"
+  },
   {
-  q:"what was my nickname before Yuvu🌍? 💗",
-  options:["yuviee","Yuvieka💅✨","yuvrajjjjj"],
-  answer:"Yuvieka💅✨"
-},
+    q:"what was my nickname before Yuvu🌍? 💗",
+    options:["yuviee","Yuvieka💅✨","yuvrajjjjj"],
+    answer:"Yuvieka💅✨"
+  },
   {
-  q:"what do you owe me after boards?????? ✨✨",
-  options:["your timeee","clutcher","coffee date","strap bracelet/rubberband","all of the above✨"],
-  answer:"all of the above✨"
-},
- {
+    q:"what do you owe me after boards?????? ✨✨",
+    options:["your timeee","clutcher","coffee date","strap bracelet/rubberband","all of the above✨"],
+    answer:"all of the above✨"
+  },
+  {
     q:"Will you be my Valentine? 💘",
     options:["Yes","No"],
     answer:"Yes",
@@ -212,10 +212,11 @@ function checkAnswer(choice){
 
   const q=quiz[step];
 
+  /* 💘 LAST QUESTION RETRY FIX */
   if(q.special && choice==="No"){
-    popup("nopesss ❌ system error 😌 you are already my valentine forever ♾️");
+    popup("nopesss ❌ system error 😌 try again");
     hearts();
-    setTimeout(nextStep,1500);
+    setTimeout(()=>locked=false,1300);
     return;
   }
 
@@ -232,12 +233,17 @@ function checkAnswer(choice){
 function nextStep(){
   step++;
   if(step<quiz.length) showQuestion();
-  else show("<h3>mera baccha i loveeeeee u 
-            i never want to be without u not 
-    even for a single day jaan dont leave me i wont be able to handle it 
-      i promise ill not run jb koi prob aayegi tere saath khada rheke sab
-        jhel jaunga bs mera haath mt chordhna tumhe kbhi dur nhi jaane dunga 
-          mwwwwaaaaahhhh</p>");
+  else show(`
+    <h3>💖</h3>
+    <p>
+      mera baccha i loveeeeee u<br><br>
+      i never want to be without u not even for a single day jaan<br><br>
+      dont leave me i wont be able to handle it<br><br>
+      i promise ill not run jb koi prob aayegi tere saath khada rheke sab jhel jaunga<br><br>
+      bs mera haath mt chordhna tumhe kbhi dur nhi jaane dunga<br><br>
+      mwwwwaaaaahhhh ❤️
+    </p>
+  `);
 }
 
 /* 🚀 START */
@@ -247,4 +253,3 @@ showPass();
 </script>
 </body>
 </html>
-
